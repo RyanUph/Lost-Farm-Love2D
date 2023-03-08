@@ -43,6 +43,9 @@ function love.draw()
 
         drawStone(500, 500)
         drawStone(500, 50)
+        drawStone(100, 500)
+        drawStone(800, 500)
+        drawStone(800, 700)
 
         player.draw()
         world:draw()
