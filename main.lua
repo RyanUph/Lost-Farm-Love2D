@@ -1,36 +1,17 @@
 function love.load()
     require('src/player')
+    require('src/loadMap')
     wf = require('libraries/windfield')
-    sti = require('libraries/sti')
     camera = require('libraries/camera')
 
     world = wf.newWorld(0, 0)
-    gameMap = sti('maps/lostFarm1.lua')
     cam = camera()
+    loadMap('lostFarm1')
     player.load()
 
     -- Player colliders
     player.collider = world:newBSGRectangleCollider(player.x, player.y, 55, 80, 10)
     player.collider:setFixedRotation(true)
-
-    -- Border colliders
-    borders = {}
-    if gameMap.layers["Borders"] then
-        for i, obj in pairs(gameMap.layers["Borders"].objects) do
-            border = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
-            border:setType('static')
-            table.insert(borders, border)
-        end
-    end
-
-    stones = {}
-    if gameMap.layers["Stones"] then
-        for i, obj in pairs(gameMap.layers["Stones"].objects) do
-            stone = world:newBSGRectangleCollider(obj.x, obj.y, obj.width, obj.height, 40)
-            stone:setType('static')
-            table.insert(stones, stone)
-        end
-    end
 
     sprites = {}
     sprites.stone = love.graphics.newImage('sprites/stone.png')
