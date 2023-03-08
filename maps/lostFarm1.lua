@@ -9,8 +9,8 @@ return {
   height = 30,
   tilewidth = 64,
   tileheight = 64,
-  nextlayerid = 6,
-  nextobjectid = 7,
+  nextlayerid = 7,
+  nextobjectid = 13,
   properties = {},
   tilesets = {
     {
@@ -1154,6 +1154,74 @@ return {
           y = -576,
           width = 64,
           height = 1792,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        }
+      }
+    },
+    {
+      type = "objectgroup",
+      draworder = "topdown",
+      id = 6,
+      name = "Stones",
+      class = "",
+      visible = true,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      parallaxx = 1,
+      parallaxy = 1,
+      properties = {},
+      objects = {
+        {
+          id = 7,
+          name = "",
+          class = "",
+          shape = "rectangle",
+          x = 500,
+          y = 500,
+          width = 128,
+          height = 128,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 9,
+          name = "",
+          class = "",
+          shape = "rectangle",
+          x = 500,
+          y = 100,
+          width = 128,
+          height = 128,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 10,
+          name = "",
+          class = "",
+          shape = "rectangle",
+          x = 100,
+          y = 500,
+          width = 128,
+          height = 128,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 11,
+          name = "",
+          class = "",
+          shape = "rectangle",
+          x = 800,
+          y = 700,
+          width = 128,
+          height = 128,
           rotation = 0,
           visible = true,
           properties = {}

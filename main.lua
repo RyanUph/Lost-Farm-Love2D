@@ -23,13 +23,13 @@ function love.load()
         end
     end
 
-    -- Stone colliders
     stones = {}
-    stonesRC = {}
-    for i, obj in pairs(stones) do
-        stoneRC = world:newRectangleCollider(obj.x, obj.y, 128, 128)
-        stoneRC:setType('static')
-        table.insert(stonesRC, stoneRC)
+    if gameMap.layers["Stones"] then
+        for i, obj in pairs(gameMap.layers["Stones"].objects) do
+            stone = world:newBSGRectangleCollider(obj.x, obj.y, obj.width, obj.height, 40)
+            stone:setType('static')
+            table.insert(stones, stone)
+        end
     end
 
     sprites = {}
