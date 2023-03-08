@@ -23,7 +23,15 @@ function love.load()
         end
     end
 
+    -- Stone colliders
     stones = {}
+    stonesRC = {}
+    for i, obj in pairs(stones) do
+        stoneRC = world:newRectangleCollider(obj.x, obj.y, 128, 128)
+        stoneRC:setType('static')
+        table.insert(stonesRC, stoneRC)
+    end
+
     sprites = {}
     sprites.stone = love.graphics.newImage('sprites/stone.png')
 end
@@ -42,9 +50,8 @@ function love.draw()
         gameMap:drawLayer(gameMap.layers['Water'])
 
         drawStone(500, 500)
-        drawStone(500, 50)
+        drawStone(500, 100)
         drawStone(100, 500)
-        drawStone(800, 500)
         drawStone(800, 700)
 
         player.draw()
@@ -57,8 +64,6 @@ function drawStone(x, y)
     stone = {}
     stone.x = x
     stone.y = y
-    stone.collider = world:newBSGRectangleCollider(stone.x, stone.y, 128, 128, 40)
-    stone.collider:setType('static')
     love.graphics.draw(sprites.stone, stone.x, stone.y, nil, nil, nil, 64, 64)
 
     table.insert(stones, stone)
