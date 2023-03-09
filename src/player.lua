@@ -5,7 +5,7 @@ function player.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
     player.x = 540
     player.y = 400
-    player.speed = 400
+    player.speed = 500
     player.spriteSheet = love.graphics.newImage('sprites/player.png')
     player.grid = anim8.newGrid(48, 48, player.spriteSheet:getWidth(), player.spriteSheet:getHeight())
 
