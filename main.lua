@@ -1,6 +1,7 @@
+require('src/player')
+require('src/loadMap')
+
 function love.load()
-    require('src/player')
-    require('src/loadMap')
     wf = require('libraries/windfield')
     camera = require('libraries/camera')
 
