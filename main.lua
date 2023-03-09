@@ -30,22 +30,12 @@ function love.draw()
         gameMap:drawLayer(gameMap.layers['Fences'])
         gameMap:drawLayer(gameMap.layers['Water'])
 
-        drawStone(500, 500)
-        drawStone(500, 100)
-        drawStone(100, 500)
-        drawStone(800, 700)
+        love.graphics.draw(sprites.stone, 500, 500, nil, nil, nil, 64, 64)
+        love.graphics.draw(sprites.stone, 500, 100, nil, nil, nil, 64, 64)
+        love.graphics.draw(sprites.stone, 100, 500, nil, nil, nil, 64, 64)
+        love.graphics.draw(sprites.stone, 800, 700, nil, nil, nil, 64, 64)
 
         player.draw()
         world:draw()
     cam:detach()
-end
-
--- Functions
-function drawStone(x, y)
-    stone = {}
-    stone.x = x
-    stone.y = y
-    love.graphics.draw(sprites.stone, stone.x, stone.y, nil, nil, nil, 64, 64)
-
-    table.insert(stones, stone)
 end
