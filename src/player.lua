@@ -2,7 +2,6 @@ player = {}
 anim8 = require('libraries/anim8')
 
 function player.load()
-    love.graphics.setDefaultFilter('nearest', 'nearest')
     player.x = 540
     player.y = 400
     player.speed = 500
@@ -60,7 +59,9 @@ function playerMovement(dt)
     end
 
     player.anim:update(dt)
-    player.collider:setLinearVelocity(vX, vY)
-    player.x = player.collider:getX()
-    player.y = player.collider:getY()
+    local mag = math.sqrt(vX * vX + vY * vY)
+    if mag ~= 0 then vX, vY = vX/mag, vY/mag end
+    player.collider:setLinearVelocity(vX * player.speed, vY * player.speed)
+    player.x = player.collider:getX() --player.x + vX * player.speed * dt
+    player.y = player.collider:getY() --player.y + vY * player.speed * dt
 end
