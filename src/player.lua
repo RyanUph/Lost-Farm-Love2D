@@ -27,6 +27,7 @@ function player.update(dt)
     playerMovement(dt)
     bulletMovement(dt)
     destroyBullet(dt)
+    destroyStone(dt)
 end
 
 function player.draw()
@@ -137,6 +138,32 @@ function destroyBullet(dt)
         local gw, gh = cam:worldCoords(love.graphics.getWidth(), love.graphics.getHeight())
         if b.x < gx - 10 or b.y < gy - 10 or b.x > gw + 10 or b.y > gh + 10 then
             table.remove(bullets, i)
+        end
+    end
+end
+
+-- Stone functions
+
+function destroyStone(dt)
+    for i, bullet in ipairs(bullets) do
+        for j, stone in ipairs(stones) do
+            if distanceBetween(bullet.x, bullet.y, stone.x, stone.y) < 30 then
+                bullet.dead = true
+                stone.dead = true
+            end
+        end
+    end
+
+    for i = #bullets, 1, -1 do
+        local b = bullets[i]
+        if b.dead == true then table.remove(bullets, i) end
+    end
+
+    for i = #stones, 1, -1 do
+        local s = stones[i]
+        if s.dead == true then 
+            table.remove(stones, i)
+            s.collider:destroy()
         end
     end
 end

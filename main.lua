@@ -36,7 +36,7 @@ function love.draw()
         gameMap:drawLayer(gameMap.layers['Water'])
 
         for i, stone in ipairs(stones) do
-            love.graphics.draw(sprites.stone, stone.x, stone.y, nil, nil, nil, 64, 64)
+            love.graphics.draw(sprites.stone, stone.x, stone.y, nil, nil, nil, 128, 128)
         end
 
         player.draw()
@@ -54,7 +54,8 @@ function createStone(x, y)
     local stone = {}
     stone.x = x
     stone.y = y
-    stone.collider = world:newBSGRectangleCollider(stone.x, stone.y, 128, 128, 40)
+    stone.dead = false
+    stone.collider = world:newBSGRectangleCollider(stone.x - 65, stone.y - 65, 128, 128, 40)
     stone.collider:setType('static')
     table.insert(stones, stone)
 end
