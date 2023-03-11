@@ -26,6 +26,7 @@ end
 function player.update(dt)
     playerMovement(dt)
     bulletMovement(dt)
+    destroyBullet(dt)
 end
 
 function player.draw()
@@ -103,6 +104,8 @@ function playerMovement(dt)
     player.y = player.collider:getY()
 end
 
+-- Bullet functions
+
 function spawnBullet()
     local bullet = {}
     bullet.x = player.x
@@ -124,5 +127,16 @@ function bulletMovement(dt)
         if bullet.direction == 2 then bullet.x = bullet.x - bullet.speed * dt end
         if bullet.direction == 3 then bullet.y = bullet.y + bullet.speed * dt end
         if bullet.direction == 4 then bullet.y = bullet.y - bullet.speed * dt end
+    end
+end
+
+function destroyBullet(dt)
+    for i = #bullets, 1, -1 do
+        local b = bullets[i]
+        local gx, gy = cam:worldCoords(0, 0)
+        local gw, gh = cam:worldCoords(love.graphics.getWidth(), love.graphics.getHeight())
+        if b.x < gx - 10 or b.y < gy - 10 or b.x > gw + 10 or b.y > gh + 10 then
+            table.remove(bullets, i)
+        end
     end
 end

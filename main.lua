@@ -46,13 +46,16 @@ end
 
 -- Functions
 
+function distanceBetween(x1, y1, x2, y2)
+    return math.sqrt((x2 - x1) ^ 2 + (y2 - y1) ^ 2)
+end
+
 function createStone(x, y)
     local stone = {}
     stone.x = x
     stone.y = y
     stone.collider = world:newBSGRectangleCollider(stone.x, stone.y, 128, 128, 40)
     stone.collider:setType('static')
-    print(stone.x, stone.y)
     table.insert(stones, stone)
 end
 
