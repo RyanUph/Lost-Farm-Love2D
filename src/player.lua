@@ -161,7 +161,7 @@ function destroyStone(dt)
 
     for i = #stones, 1, -1 do
         local s = stones[i]
-        if s.dead == true then 
+        if s.dead == true then
             table.remove(stones, i)
             s.collider:destroy()
         end
