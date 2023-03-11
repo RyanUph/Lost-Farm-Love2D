@@ -1,5 +1,6 @@
 require('src/player')
 require('src/loadMap')
+stones = {}
 
 function love.load()
     wf = require('libraries/windfield')
@@ -16,6 +17,9 @@ function love.load()
 
     sprites = {}
     sprites.stone = love.graphics.newImage('sprites/stone.png')
+
+    createStone(500, 500)
+    createStone(800, 700)
 end
 
 function love.update(dt)
@@ -31,12 +35,29 @@ function love.draw()
         gameMap:drawLayer(gameMap.layers['Fences'])
         gameMap:drawLayer(gameMap.layers['Water'])
 
-        love.graphics.draw(sprites.stone, 500, 500, nil, nil, nil, 64, 64)
-        love.graphics.draw(sprites.stone, 500, 100, nil, nil, nil, 64, 64)
-        love.graphics.draw(sprites.stone, 100, 500, nil, nil, nil, 64, 64)
-        love.graphics.draw(sprites.stone, 800, 700, nil, nil, nil, 64, 64)
+        for i, stone in ipairs(stones) do
+            love.graphics.draw(sprites.stone, stone.x, stone.y, nil, nil, nil, 64, 64)
+        end
 
         player.draw()
         world:draw()
     cam:detach()
+end
+
+-- Functions
+
+function createStone(x, y)
+    local stone = {}
+    stone.x = x
+    stone.y = y
+    stone.collider = world:newBSGRectangleCollider(stone.x, stone.y, 128, 128, 40)
+    stone.collider:setType('static')
+    print(stone.x, stone.y)
+    table.insert(stones, stone)
+end
+
+function love.keypressed(key)
+    if key == 'space' then
+        createStone()
+    end
 end

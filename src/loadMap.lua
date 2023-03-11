@@ -11,13 +11,4 @@ function loadMap(mapName)
             table.insert(borders, border)
         end
     end
-
-    stones = {}
-    if gameMap.layers["Stones"] then
-        for i, obj in pairs(gameMap.layers["Stones"].objects) do
-            stone = world:newBSGRectangleCollider(obj.x, obj.y, obj.width, obj.height, 40)
-            stone:setType('static')
-            table.insert(stones, stone)
-        end
-    end
 end
