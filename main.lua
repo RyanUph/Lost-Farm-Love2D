@@ -77,9 +77,3 @@ function createLog(x, y)
     log.collider:setType('static')
     table.insert(logs, log)
 end
-
-function love.keypressed(key)
-    if key == 'space' then
-        createStone()
-    end
-end
