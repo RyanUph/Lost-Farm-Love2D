@@ -9,7 +9,7 @@ function love.load()
 
     world = wf.newWorld(0, 0)
     cam = camera()
-    loadMap('lostFarm1')
+    loadMap('gameMap')
     player.load()
 
     -- Player colliders
