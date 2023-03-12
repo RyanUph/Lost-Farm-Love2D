@@ -45,7 +45,12 @@ end
 function love.mousepressed(x, y, button)
     if button == 1 then
         spawnBullet()
+        gooi.pressed()
     end
+end
+
+function love.mousereleased(x, y, button)
+    gooi.released()
 end
 
 function playerMovement(dt)
@@ -171,6 +176,8 @@ function destroyStone(dt)
         end
     end
 end
+
+-- Logs functions
 
 function destroyLog(dt)
     for i, bullet in ipairs(bullets) do

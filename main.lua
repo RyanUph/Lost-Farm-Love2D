@@ -1,14 +1,15 @@
-require('src/player')
-require('src/loadMap')
 stones = {}
 logs = {}
 
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
+    require('libraries/gooi')
+    require('src/player')
+    require('src/loadMap')
     wf = require('libraries/windfield')
     camera = require('libraries/camera')
 
-    gameState = 2
+    gameState = 1
 
     world = wf.newWorld(0, 0)
     cam = camera()
@@ -23,11 +24,19 @@ function love.load()
     sprites.stone = love.graphics.newImage('sprites/stone.png')
     sprites.log = love.graphics.newImage('sprites/log.png')
     sprites.playButton = love.graphics.newImage('sprites/playButton.png')
+    sprites.background = love.graphics.newImage('sprites/background.png')
 
+    -- Resources
     createStone(500, 500)
     createStone(800, 700)
     createLog(700, 900)
     createLog(1000, 800)
+
+    -- GUI
+    gooi.newButton({text = "", x = 540 - 150, y = 400 - 64, w = 330, h = 100, icon = sprites.playButton}):
+    onRelease(function()
+        gameState = 2
+    end)
 end
 
 function love.update(dt)
@@ -57,6 +66,11 @@ function love.draw()
         player.draw()
         world:draw()
     cam:detach()
+    end
+
+    if gameState == 1 then
+        love.graphics.draw(sprites.background, 0, 0, nil, 3)
+        gooi.draw()
     end
 end
 
