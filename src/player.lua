@@ -101,6 +101,8 @@ function playerMovement(dt)
         player.anim:gotoFrame(1)
     end
 
+    -- Updating animations
+    -- Updating colliders position
     player.anim:update(dt)
     player.collider:setLinearVelocity(vX, vY)
     player.x = player.collider:getX()
