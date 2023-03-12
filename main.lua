@@ -7,6 +7,8 @@ function love.load()
     wf = require('libraries/windfield')
     camera = require('libraries/camera')
 
+    gameState = 2
+
     world = wf.newWorld(0, 0)
     cam = camera()
     loadMap('gameMap')
@@ -27,13 +29,16 @@ function love.load()
 end
 
 function love.update(dt)
-    player.update(dt)
-    cam:lookAt(player.x, player.y)
-    world:update(dt)
+    if gameState == 2 then
+        player.update(dt)
+        cam:lookAt(player.x, player.y)
+        world:update(dt)
+    end
 end
 
 function love.draw()
-    cam:attach()
+    if gameState == 2 then
+        cam:attach()
         gameMap:drawLayer(gameMap.layers['Grass'])
         gameMap:drawLayer(gameMap.layers['Path'])
         gameMap:drawLayer(gameMap.layers['Fences'])
@@ -49,7 +54,8 @@ function love.draw()
 
         player.draw()
         world:draw()
-    cam:detach()
+    cam:detach() 
+    end
 end
 
 -- Functions
