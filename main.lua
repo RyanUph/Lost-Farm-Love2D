@@ -1,6 +1,7 @@
 require('src/player')
 require('src/loadMap')
 stones = {}
+logs = {}
 
 function love.load()
     wf = require('libraries/windfield')
@@ -17,9 +18,12 @@ function love.load()
 
     sprites = {}
     sprites.stone = love.graphics.newImage('sprites/stone.png')
+    sprites.log = love.graphics.newImage('sprites/log.png')
 
     createStone(500, 500)
     createStone(800, 700)
+    createLog(700, 900)
+    createLog(1000, 800)
 end
 
 function love.update(dt)
@@ -39,6 +43,10 @@ function love.draw()
             love.graphics.draw(sprites.stone, stone.x, stone.y, nil, nil, nil, 128, 128)
         end
 
+        for i, log in ipairs(logs) do
+            love.graphics.draw(sprites.log, log.x, log.y, nil, nil, nil, 128, 128)
+        end
+
         player.draw()
         world:draw()
     cam:detach()
@@ -55,9 +63,19 @@ function createStone(x, y)
     stone.x = x
     stone.y = y
     stone.dead = false
-    stone.collider = world:newBSGRectangleCollider(stone.x - 65, stone.y - 65, 128, 128, 40)
+    stone.collider = world:newBSGRectangleCollider(stone.x - 64, stone.y - 64, 128, 128, 40)
     stone.collider:setType('static')
     table.insert(stones, stone)
+end
+
+function createLog(x, y)
+    local log = {}
+    log.x = x
+    log.y = y
+    log.dead = false
+    log.collider = world:newBSGRectangleCollider(log.x - 32, log.y - 5, 80, 25, 10)
+    log.collider:setType('static')
+    table.insert(logs, log)
 end
 
 function love.keypressed(key)

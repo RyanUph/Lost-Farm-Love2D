@@ -27,7 +27,9 @@ function player.update(dt)
     playerMovement(dt)
     bulletMovement(dt)
     destroyBullet(dt)
+
     destroyStone(dt)
+    destroyLog(dt)
 end
 
 function player.draw()
@@ -164,6 +166,30 @@ function destroyStone(dt)
         if s.dead == true then
             table.remove(stones, i)
             s.collider:destroy()
+        end
+    end
+end
+
+function destroyLog(dt)
+    for i, bullet in ipairs(bullets) do
+        for j, log in ipairs(logs) do
+            if distanceBetween(bullet.x, bullet.y, log.x, log.y) < 30 then
+                bullet.dead = true
+                log.dead = true
+            end
+        end
+    end
+
+    for i = #bullets, 1, -1 do
+        local b = bullets[i]
+        if b.dead == true then table.remove(bullets, i) end
+    end
+
+    for i = #logs, 1, -1 do
+        local l = logs[i]
+        if l.dead == true then
+            table.remove(logs, i)
+            l.collider:destroy()
         end
     end
 end
