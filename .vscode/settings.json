@@ -8,7 +8,7 @@
     "workbench.colorCustomizations": {
         "statusBar.background": "#222222",
         "editorError.foreground": "#ff0000",
-        "editorWarning.foreground": "#00000000",
+        "editorWarning.foreground": "#f6ff00",
         "editorInfo.foreground": "#00000000"
     }
 }

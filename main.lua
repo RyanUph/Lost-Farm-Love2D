@@ -4,6 +4,7 @@ stones = {}
 logs = {}
 
 function love.load()
+    love.graphics.setDefaultFilter('nearest', 'nearest')
     wf = require('libraries/windfield')
     camera = require('libraries/camera')
 
@@ -21,6 +22,7 @@ function love.load()
     sprites = {}
     sprites.stone = love.graphics.newImage('sprites/stone.png')
     sprites.log = love.graphics.newImage('sprites/log.png')
+    sprites.playButton = love.graphics.newImage('sprites/playButton.png')
 
     createStone(500, 500)
     createStone(800, 700)
