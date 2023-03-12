@@ -11,7 +11,7 @@ function love.load()
 
     world = wf.newWorld(0, 0)
     cam = camera()
-    loadMap('gameMap')
+    loadMap('testMap')
     player.load()
 
     -- Player colliders
@@ -40,8 +40,8 @@ function love.draw()
     if gameState == 2 then
         cam:attach()
         gameMap:drawLayer(gameMap.layers['Grass'])
-        gameMap:drawLayer(gameMap.layers['Path'])
         gameMap:drawLayer(gameMap.layers['Fences'])
+        gameMap:drawLayer(gameMap.layers['Path'])
         gameMap:drawLayer(gameMap.layers['Water'])
 
         for i, stone in ipairs(stones) do
@@ -54,7 +54,7 @@ function love.draw()
 
         player.draw()
         world:draw()
-    cam:detach() 
+    cam:detach()
     end
 end
 
