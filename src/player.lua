@@ -1,5 +1,6 @@
 player = {}
 anim8 = require('libraries/anim8')
+require("src/salvage")
 
 function player.load()
     player.x = 540
@@ -14,6 +15,8 @@ function player.load()
     player.animations.up = anim8.newAnimation(player.grid('1-4', 2), 0.1)
     player.animations.left = anim8.newAnimation(player.grid('1-4', 3), 0.1)
     player.anim = player.animations.down
+
+    player:initInventory()
 end
 
 function player.update(dt)
@@ -64,4 +67,19 @@ function playerMovement(dt)
     player.collider:setLinearVelocity(vX * player.speed, vY * player.speed)
     player.x = player.collider:getX() --player.x + vX * player.speed * dt
     player.y = player.collider:getY() --player.y + vY * player.speed * dt
+end
+
+function player:initInventory()
+    self.inventory = {}
+    self.inventory[SALVAGE_TYPES.ROCKS] = 0
+    self.inventory[SALVAGE_TYPES.DIRT] = 0
+    print(self.inventory[1])
+    print(#self.inventory)
+end
+
+function player:addToInventory(items)
+    for k, v in ipairs(items) do
+        print(k, v)
+        self.inventory[k] = self.inventory[k] + v
+    end
 end

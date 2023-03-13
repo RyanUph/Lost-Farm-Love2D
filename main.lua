@@ -1,5 +1,6 @@
 require('src/player')
 require('src/loadMap')
+require("src/stone")
 
 function love.load()
     acc = 0
@@ -19,24 +20,34 @@ function love.load()
 
     sprites = {}
     sprites.stone = love.graphics.newImage('sprites/stone.png')
+
+    font = love.graphics.newFont(30)
+    text = love.graphics.newText(font, "")
+
+    music = love.audio.newSource("music/calm_01.ogg", "stream")
+    music:setLooping(true)
+    music:setVolume(0.7)
+    music:play()
 end
 
 function love.update(dt)
     world:update(dt)
     player.update(dt)
     cam:lookAt(player.x, player.y)
-    if lockCamera then
-        local sw, sh = love.graphics.getWidth(), love.graphics.getHeight()
-        local mapw, maph = gameMap.width * gameMap.tilewidth, gameMap.height * gameMap.tileheight
-        if cam.x < sw/2 then cam.x = sw/2 end
-        if cam.y < sh/2 then cam.y = sh/2 end
-        if cam.x > mapw + gameMap.tilewidth + 32 then cam.x = mapw + gameMap.tilewidth + 32 end
-        if cam.y > maph + gameMap.tileheight + 32 then cam.y = maph + gameMap.tileheight + 32 end
-    end
+    -- Broken camera bounds code, needs fixing
+    --if lockCamera then
+    --    local sw, sh = love.graphics.getWidth(), love.graphics.getHeight()
+    --    local mapw, maph = gameMap.width * gameMap.tilewidth, gameMap.height * gameMap.tileheight
+    --    if cam.x < sw/2 then cam.x = sw/2 end
+    --    if cam.y < sh/2 then cam.y = sh/2 end
+    --    if cam.x > mapw + gameMap.tilewidth + 32 then cam.x = mapw + gameMap.tilewidth + 32 end
+    --    if cam.y > maph + gameMap.tileheight + 32 then cam.y = maph + gameMap.tileheight + 32 end
+    --end
     acc = acc + dt
     if acc > 1 then
         acc = acc - 1
         print(cam:worldCoords(love.mouse.getPosition()))
+        print(#SALVAGE_TYPES)
     end
 end
 
@@ -54,25 +65,26 @@ function love.draw()
         player.draw()
         world:draw()
     cam:detach()
+    for i, v in ipairs(player.inventory) do
+        --love.graphics.print(v, 0, 32*i, 0, 2, 2)
+        local string = invItems[i] .. ":   " .. v
+        text:set(string)
+        love.graphics.draw(text, 0, 32*i)
+    end
 end
 
 function love.keypressed(key)
     if key == "c" then
         lockCamera = not lockCamera
-        print(lockCamera)
+        print("Camera lock: " .. lockCamera)
     end
     if key == "m" then
-        print(gameMap.width, gameMap.height, gameMap.tilewidth, gameMap.tileheight)
+        if music:isPlaying() then music:pause() else music:play() end
     end
     if key == "r" then
         addStone(cam:worldCoords(love.mouse.getPosition()))
     end
-end
-
-function addStone(x, y, width, height)
-    local x, y, width, height = x or 0, y or 0, width or 128, height or 128
-    stone = world:newBSGRectangleCollider(x, y, width, height, 40)
-    print(stone:getX(), stone:getY())
-    stone:setType('static')
-    table.insert(stones, stone)
+    if key == "e" then
+        removeStone(getStone(cam:worldCoords(love.mouse.getPosition())))
+    end
 end
