@@ -1,6 +1,6 @@
 function addStone(x, y, width, height)
     local x, y, width, height = x or 0, y or 0, width or 128, height or 128
-    stone = world:newBSGRectangleCollider(x, y, width, height, 40)
+    local stone = world:newBSGRectangleCollider(x, y, width, height, 40)
     print(stone:getX(), stone:getY())
     stone:setType('static')
     stone.x = x
@@ -18,7 +18,7 @@ function removeStone(id)
     for i, s in ipairs(stones) do
         if s == id then
             s:destroy()
-            if stone.salvage then player:addToInventory(stone.salvage) end
+            if s.salvage then player:addToInventory(s.salvage) end
             table.remove(stones, i)
         end
     end

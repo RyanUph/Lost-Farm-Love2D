@@ -8,7 +8,7 @@ function protect(t)
 end
 
 SALVAGE_TYPES = {
-    --NONE = 0,
+    NONE = 0,
     ROCKS = 1,
     DIRT = 2,
 }

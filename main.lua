@@ -67,9 +67,11 @@ function love.draw()
     cam:detach()
     for i, v in ipairs(player.inventory) do
         --love.graphics.print(v, 0, 32*i, 0, 2, 2)
-        local string = invItems[i] .. ":   " .. v
-        text:set(string)
-        love.graphics.draw(text, 0, 32*i)
+        if player.inventory[i] ~= 0 then
+            local string = invItems[i] .. ":   " .. v
+            text:set(string)
+            love.graphics.draw(text, 0, 32*i)
+        end
     end
 end
 
