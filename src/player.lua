@@ -7,14 +7,20 @@ function player.load()
     player.x = 540
     player.y = 400
     player.speed = 500
-    player.spriteSheet = love.graphics.newImage('sprites/player.png')
+    player.spriteSheet = love.graphics.newImage('sprites/Player/player.png')
+    player.actionSheet = love.graphics.newImage('sprites/Player/playerActions.png')
     player.grid = anim8.newGrid(48, 48, player.spriteSheet:getWidth(), player.spriteSheet:getHeight())
+    player.actionGrid = anim8.newGrid(48, 48, player.actionSheet:getWidth(), player.actionSheet:getHeight())
 
     player.animations = {}
     player.animations.down = anim8.newAnimation(player.grid('1-4', 1), 0.1)
     player.animations.right = anim8.newAnimation(player.grid('1-4', 4), 0.1)
     player.animations.up = anim8.newAnimation(player.grid('1-4', 2), 0.1)
     player.animations.left = anim8.newAnimation(player.grid('1-4', 3), 0.1)
+    player.animations.axeDown = anim8.newAnimation(player.actionGrid('1-2', 5), 0.1)
+    player.animations.axeUp = anim8.newAnimation(player.actionGrid('1-2', 6), 0.1)
+    player.animations.axeRight = anim8.newAnimation(player.actionGrid('1-2', 8), 0.1)
+    player.animations.axeLeft = anim8.newAnimation(player.actionGrid('1-2', 7), 0.1)
     player.anim = player.animations.down
 
     facingRight = false
@@ -41,17 +47,6 @@ function player.draw()
 end
 
 -- Player functions
-
-function love.mousepressed(x, y, button)
-    if button == 1 then
-        spawnBullet()
-        gooi.pressed()
-    end
-end
-
-function love.mousereleased(x, y, button)
-    gooi.released()
-end
 
 function playerMovement(dt)
     local isMoving = false

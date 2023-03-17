@@ -3,7 +3,6 @@ logs = {}
 
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
-    require('libraries/gooi')
     require('src/player')
     require('src/loadMap')
     wf = require('libraries/windfield')
@@ -21,10 +20,9 @@ function love.load()
     player.collider:setFixedRotation(true)
 
     sprites = {}
-    sprites.stone = love.graphics.newImage('sprites/stone.png')
-    sprites.log = love.graphics.newImage('sprites/log.png')
-    sprites.playButton = love.graphics.newImage('sprites/playButton.png')
-    sprites.background = love.graphics.newImage('sprites/background.png')
+    sprites.stone = love.graphics.newImage('sprites/Objects/stone.png')
+    sprites.log = love.graphics.newImage('sprites/Objects/log.png')
+    sprites.background = love.graphics.newImage('sprites/UI/background.png')
 
     -- Resources
     createStone(500, 500)
@@ -33,10 +31,11 @@ function love.load()
     createLog(1000, 800)
 
     -- GUI
-    gooi.newButton({text = "", x = 540 - 150, y = 400 - 64, w = 330, h = 100, icon = sprites.playButton}):
-    onRelease(function()
-        gameState = 2
-    end)
+    font = love.graphics.newFont('fonts/pixel.ttf', 30)
+    startText1 = love.graphics.newText(font, "USE 'WASD' to move")
+    startText2 = love.graphics.newText(font, "Use 'E' to destroy")
+    startText3 = love.graphics.newText(font, "Use 'ESCAPE' to exit")
+    startText4 = love.graphics.newText(font, "Press 'SPACE' to start'")
 end
 
 function love.update(dt)
@@ -70,11 +69,20 @@ function love.draw()
 
     if gameState == 1 then
         love.graphics.draw(sprites.background, 0, 0, nil, 3)
-        gooi.draw()
+        love.graphics.draw(startText1, 300, 250, nil, 2)
+        love.graphics.draw(startText2, 300, 300, nil, 2)
+        love.graphics.draw(startText3, 275, 400, nil, 2)
+        love.graphics.draw(startText4, 250, 450, nil, 2)
     end
 end
 
 -- Functions
+
+function love.keypressed(key)
+    if key == 'space' and gameState == 1 then gameState = 2 end
+    if key == 'escape' then love.event.quit() end
+    if key == 'e' then spawnBullet() end
+end
 
 function distanceBetween(x1, y1, x2, y2)
     return math.sqrt((x2 - x1) ^ 2 + (y2 - y1) ^ 2)
