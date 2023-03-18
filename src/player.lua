@@ -72,7 +72,7 @@ function playerMovement(dt)
 
     if love.keyboard.isDown("d") then
         vX = player.speed
-        player.anim = player.animations.right
+        if not attack then player.anim = player.animations.right end
         isMoving = true
 
         facingRight = true
@@ -83,7 +83,7 @@ function playerMovement(dt)
 
     if love.keyboard.isDown("a") then
         vX = player.speed * -1
-        player.anim = player.animations.left
+        if not attack then player.anim = player.animations.left end
         isMoving = true
 
         facingRight = false
@@ -94,7 +94,7 @@ function playerMovement(dt)
 
     if love.keyboard.isDown("s") then
         vY = player.speed
-        player.anim = player.animations.down
+        if not attack then player.anim = player.animations.down end
         isMoving = true
 
         facingRight = false
@@ -105,7 +105,7 @@ function playerMovement(dt)
 
     if love.keyboard.isDown("w") then
         vY = player.speed * -1
-        player.anim = player.animations.up
+        if not attack then player.anim = player.animations.up end
         isMoving = true
 
         facingRight = false
@@ -123,8 +123,10 @@ function playerMovement(dt)
 
     -- Updating animations
     -- Updating colliders position
+    local mag = math.sqrt(vX * vX + vY * vY)
+    if mag ~= 0 then vX, vY = vX/mag, vY/mag end
     player.anim:update(dt)
-    player.collider:setLinearVelocity(vX, vY)
+    player.collider:setLinearVelocity(vX * player.speed, vY * player.speed)
     player.x = player.collider:getX()
     player.y = player.collider:getY()
 
