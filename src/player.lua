@@ -17,16 +17,19 @@ function player.load()
     player.animations.right = anim8.newAnimation(player.grid('1-4', 4), 0.1)
     player.animations.up = anim8.newAnimation(player.grid('1-4', 2), 0.1)
     player.animations.left = anim8.newAnimation(player.grid('1-4', 3), 0.1)
-    player.animations.axeDown = anim8.newAnimation(player.actionGrid('1-2', 5), 0.1)
-    player.animations.axeUp = anim8.newAnimation(player.actionGrid('1-2', 6), 0.1)
-    player.animations.axeRight = anim8.newAnimation(player.actionGrid('1-2', 8), 0.1)
-    player.animations.axeLeft = anim8.newAnimation(player.actionGrid('1-2', 7), 0.1)
+    player.animations.axeDown = anim8.newAnimation(player.actionGrid('1-2', 5), 0.1, function() attack = false player.anim = player.animations.down player.anim:gotoFrame(1) end)
+    player.animations.axeUp = anim8.newAnimation(player.actionGrid('1-2', 6), 0.1, function() attack = false player.anim = player.animations.up player.anim:gotoFrame(1) end)
+    player.animations.axeRight = anim8.newAnimation(player.actionGrid('1-2', 8), 0.1, function() attack = false player.anim = player.animations.right player.anim:gotoFrame(1) end)
+    player.animations.axeLeft = anim8.newAnimation(player.actionGrid('1-2', 7), 0.1, function() attack = false player.anim = player.animations.left player.anim:gotoFrame(1) end)
     player.anim = player.animations.down
 
     facingRight = false
     facingLeft = false
     facingDown = true
     facingUp = false
+    attack = false
+
+    player.attackHitbox = {x = player.x, y = player.y + 48 * 5, w = 50, h = 50}
 end
 
 function player.update(dt)
@@ -39,7 +42,21 @@ function player.update(dt)
 end
 
 function player.draw()
-   player.anim:draw(player.spriteSheet, player.x, player.y, nil, 5, nil, 24, 24)
+   if player.anim == player.animations.down or
+   player.anim == player.animations.right or
+   player.anim == player.animations.up or
+   player.anim == player.animations.left then
+    player.anim:draw(player.spriteSheet, player.x, player.y, nil, 5, nil, 24, 24)
+   else
+    player.anim:draw(player.actionSheet, player.x, player.y, nil, 5, nil, 24, 24)
+   end
+
+   if attack then
+       local prevr, prevg, prevb, preva = love.graphics.getColor()
+       love.graphics.setColor(1,0,0,1)
+       love.graphics.rectangle("line", player.attackHitbox.x, player.attackHitbox.y, player.attackHitbox.w, player.attackHitbox.h)
+       love.graphics.setColor(prevr, prevg, prevb, preva)
+    end
 
    for i, bullet in ipairs(bullets) do
         love.graphics.rectangle('fill', bullet.x, bullet.y, 10, 10)
@@ -97,9 +114,12 @@ function playerMovement(dt)
         facingUp = true
     end
 
-    if isMoving == false then
+    if isMoving == false and not attack then
         player.anim:gotoFrame(1)
     end
+
+    
+    if attack then checkCollisionsAttack() end
 
     -- Updating animations
     -- Updating colliders position
@@ -107,6 +127,11 @@ function playerMovement(dt)
     player.collider:setLinearVelocity(vX, vY)
     player.x = player.collider:getX()
     player.y = player.collider:getY()
+
+    if facingRight and attack then player.attackHitbox = {x = player.x + 44, y = player.y - 24, w = 50, h = 50} player.anim = player.animations.axeRight end
+    if facingLeft and attack then player.attackHitbox = {x = player.x - 94, y = player.y - 24, w = 50, h = 50} player.anim = player.animations.axeLeft end
+    if facingDown and attack then player.attackHitbox = {x = player.x - 24, y = player.y + 48, w = 50, h = 50} player.anim = player.animations.axeDown end
+    if facingUp and attack then player.attackHitbox = {x = player.x - 24, y = player.y - 98, w = 50, h = 50} player.anim = player.animations.axeUp end
 end
 
 -- Bullet functions
@@ -148,52 +173,42 @@ end
 
 -- Stone functions
 
-function destroyStone(dt)
-    for i, bullet in ipairs(bullets) do
-        for j, stone in ipairs(stones) do
-            if distanceBetween(bullet.x, bullet.y, stone.x, stone.y) < 30 then
-                bullet.dead = true
-                stone.dead = true
-            end
-        end
-    end
 
-    for i = #bullets, 1, -1 do
-        local b = bullets[i]
-        if b.dead == true then table.remove(bullets, i) end
+local function _checkHitboxAttack(a)
+    if a.x + a.w > player.attackHitbox.x and
+    a.y + a.h > player.attackHitbox.y and
+    a.x < player.attackHitbox.x + player.attackHitbox.w and
+    a.y < player.attackHitbox.y + player.attackHitbox.h then
+        return true
     end
+end
 
-    for i = #stones, 1, -1 do
-        local s = stones[i]
-        if s.dead == true then
-            table.remove(stones, i)
-            s.collider:destroy()
-        end
+function checkCollisionsAttack()
+    for i, stone in ipairs(stones) do
+        if _checkHitboxAttack(stone) then stone.dead = true end
+    end
+    for i, log in ipairs(logs) do
+        if _checkHitboxAttack(log) then log.dead = true end
     end
 end
 
 -- Logs functions
-
-function destroyLog(dt)
-    for i, bullet in ipairs(bullets) do
-        for j, log in ipairs(logs) do
-            if distanceBetween(bullet.x, bullet.y, log.x, log.y) < 30 then
-                bullet.dead = true
-                log.dead = true
-            end
+function destroyStone(dt)
+    for i = #stones, 1, -1 do
+        local s = stones[i]
+        if s.dead == true then
+            s.collider:destroy()
+            table.remove(stones, i)
         end
     end
+end
 
-    for i = #bullets, 1, -1 do
-        local b = bullets[i]
-        if b.dead == true then table.remove(bullets, i) end
-    end
-
+function destroyLog(dt)
     for i = #logs, 1, -1 do
         local l = logs[i]
         if l.dead == true then
-            table.remove(logs, i)
             l.collider:destroy()
+            table.remove(logs, i)
         end
     end
 end

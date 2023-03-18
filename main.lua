@@ -40,9 +40,9 @@ end
 
 function love.update(dt)
     if gameState == 2 then
+        world:update(dt)
         player.update(dt)
         cam:lookAt(player.x, player.y)
-        world:update(dt)
     end
 end
 
@@ -55,11 +55,11 @@ function love.draw()
         gameMap:drawLayer(gameMap.layers['Water'])
 
         for i, stone in ipairs(stones) do
-            love.graphics.draw(sprites.stone, stone.x, stone.y, nil, nil, nil, 128, 128)
+            love.graphics.draw(sprites.stone, stone.x + 64, stone.y + 64, nil, nil, nil, 128, 128)
         end
 
         for i, log in ipairs(logs) do
-            love.graphics.draw(sprites.log, log.x, log.y, nil, nil, nil, 128, 128)
+            love.graphics.draw(sprites.log, log.x + 32, log.y + 5, nil, nil, nil, 128, 128)
         end
 
         player.draw()
@@ -81,7 +81,7 @@ end
 function love.keypressed(key)
     if key == 'space' and gameState == 1 then gameState = 2 end
     if key == 'escape' then love.event.quit() end
-    if key == 'e' then spawnBullet() end
+    if key == 'e' and not attack then attack = true end
 end
 
 function distanceBetween(x1, y1, x2, y2)
@@ -94,8 +94,10 @@ function createStone(x, y)
     local stone = {}
     stone.x = x
     stone.y = y
+    stone.w = 128
+    stone.h = 128
     stone.dead = false
-    stone.collider = world:newBSGRectangleCollider(stone.x - 64, stone.y - 64, 128, 128, 40)
+    stone.collider = world:newBSGRectangleCollider(stone.x, stone.y, 128, 128, 40)
     stone.collider:setType('static')
     table.insert(stones, stone)
 end
@@ -104,8 +106,10 @@ function createLog(x, y)
     local log = {}
     log.x = x
     log.y = y
+    log.w = 80
+    log.h = 25
     log.dead = false
-    log.collider = world:newBSGRectangleCollider(log.x - 32, log.y - 5, 80, 25, 10)
+    log.collider = world:newBSGRectangleCollider(log.x, log.y, 80, 25, 10)
     log.collider:setType('static')
     table.insert(logs, log)
 end
