@@ -7,7 +7,6 @@ function love.load()
     require('src/loadMap')
     wf = require('libraries/windfield')
     camera = require('libraries/camera')
-    lockCamera = false
 
     gameState = 1
 

@@ -1,9 +1,9 @@
 player = {}
 bullets = {}
 anim8 = require('libraries/anim8')
-require("src/salvage")
 
 function player.load()
+    love.graphics.setDefaultFilter('nearest', 'nearest')
     player.x = 540
     player.y = 400
     player.speed = 500
