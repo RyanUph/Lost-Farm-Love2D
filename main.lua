@@ -1,17 +1,19 @@
-require('src/player')
-require('src/loadMap')
-require("src/stone")
+stones = {}
+logs = {}
 
 function love.load()
-    acc = 0
     love.graphics.setDefaultFilter('nearest', 'nearest')
+    require('src/player')
+    require('src/loadMap')
     wf = require('libraries/windfield')
     camera = require('libraries/camera')
     lockCamera = false
 
+    gameState = 1
+
     world = wf.newWorld(0, 0)
     cam = camera()
-    loadMap('lostFarm1')
+    loadMap('testMap')
     player.load()
 
     -- Player colliders
@@ -19,74 +21,92 @@ function love.load()
     player.collider:setFixedRotation(true)
 
     sprites = {}
-    sprites.stone = love.graphics.newImage('sprites/stone.png')
+    sprites.stone = love.graphics.newImage('sprites/Objects/stone.png')
+    sprites.log = love.graphics.newImage('sprites/Objects/log.png')
+    sprites.background = love.graphics.newImage('sprites/UI/background.png')
 
-    font = love.graphics.newFont(30)
-    text = love.graphics.newText(font, "")
+    -- Resources
+    createStone(500, 500)
+    createStone(800, 700)
+    createLog(700, 900)
+    createLog(1000, 800)
 
-    music = love.audio.newSource("music/calm_01.ogg", "stream")
-    music:setLooping(true)
-    music:setVolume(0.7)
-    music:play()
+    -- GUI
+    font = love.graphics.newFont('fonts/pixel.ttf', 30)
+    startText1 = love.graphics.newText(font, "USE 'WASD' to move")
+    startText2 = love.graphics.newText(font, "Use 'E' to destroy")
+    startText3 = love.graphics.newText(font, "Use 'ESCAPE' to exit")
+    startText4 = love.graphics.newText(font, "Press 'SPACE' to start'")
 end
 
 function love.update(dt)
-    world:update(dt)
-    player.update(dt)
-    cam:lookAt(player.x, player.y)
-    -- Broken camera bounds code, needs fixing
-    --if lockCamera then
-    --    local sw, sh = love.graphics.getWidth(), love.graphics.getHeight()
-    --    local mapw, maph = gameMap.width * gameMap.tilewidth, gameMap.height * gameMap.tileheight
-    --    if cam.x < sw/2 then cam.x = sw/2 end
-    --    if cam.y < sh/2 then cam.y = sh/2 end
-    --    if cam.x > mapw + gameMap.tilewidth + 32 then cam.x = mapw + gameMap.tilewidth + 32 end
-    --    if cam.y > maph + gameMap.tileheight + 32 then cam.y = maph + gameMap.tileheight + 32 end
-    --end
-    acc = acc + dt
-    if acc > 1 then
-        acc = acc - 1
-        print(cam:worldCoords(love.mouse.getPosition()))
-        print(#SALVAGE_TYPES)
+    if gameState == 2 then
+        player.update(dt)
+        cam:lookAt(player.x, player.y)
+        world:update(dt)
     end
 end
 
 function love.draw()
-    cam:attach()
+    if gameState == 2 then
+        cam:attach()
         gameMap:drawLayer(gameMap.layers['Grass'])
-        gameMap:drawLayer(gameMap.layers['Path'])
         gameMap:drawLayer(gameMap.layers['Fences'])
+        gameMap:drawLayer(gameMap.layers['Path'])
         gameMap:drawLayer(gameMap.layers['Water'])
 
-        for _, stone in ipairs(stones) do
-            love.graphics.draw(sprites.stone, stone:getX(), stone:getY(), 0, 1, 1, sprites.stone:getWidth()/2, sprites.stone:getHeight()/2)
+        for i, stone in ipairs(stones) do
+            love.graphics.draw(sprites.stone, stone.x, stone.y, nil, nil, nil, 128, 128)
+        end
+
+        for i, log in ipairs(logs) do
+            love.graphics.draw(sprites.log, log.x, log.y, nil, nil, nil, 128, 128)
         end
 
         player.draw()
         world:draw()
     cam:detach()
-    for i, v in ipairs(player.inventory) do
-        --love.graphics.print(v, 0, 32*i, 0, 2, 2)
-        if player.inventory[i] ~= 0 then
-            local string = invItems[i] .. ":   " .. v
-            text:set(string)
-            love.graphics.draw(text, 0, 32*i)
-        end
+    end
+
+    if gameState == 1 then
+        love.graphics.draw(sprites.background, 0, 0, nil, 3)
+        love.graphics.draw(startText1, 300, 250, nil, 2)
+        love.graphics.draw(startText2, 300, 300, nil, 2)
+        love.graphics.draw(startText3, 275, 400, nil, 2)
+        love.graphics.draw(startText4, 250, 450, nil, 2)
     end
 end
 
+-- Functions
+
 function love.keypressed(key)
-    if key == "c" then
-        lockCamera = not lockCamera
-        print("Camera lock: " .. lockCamera)
-    end
-    if key == "m" then
-        if music:isPlaying() then music:pause() else music:play() end
-    end
-    if key == "r" then
-        addStone(cam:worldCoords(love.mouse.getPosition()))
-    end
-    if key == "e" then
-        removeStone(getStone(cam:worldCoords(love.mouse.getPosition())))
-    end
+    if key == 'space' and gameState == 1 then gameState = 2 end
+    if key == 'escape' then love.event.quit() end
+    if key == 'e' then spawnBullet() end
+end
+
+function distanceBetween(x1, y1, x2, y2)
+    return math.sqrt((x2 - x1) ^ 2 + (y2 - y1) ^ 2)
+end
+
+-- Resources
+
+function createStone(x, y)
+    local stone = {}
+    stone.x = x
+    stone.y = y
+    stone.dead = false
+    stone.collider = world:newBSGRectangleCollider(stone.x - 64, stone.y - 64, 128, 128, 40)
+    stone.collider:setType('static')
+    table.insert(stones, stone)
+end
+
+function createLog(x, y)
+    local log = {}
+    log.x = x
+    log.y = y
+    log.dead = false
+    log.collider = world:newBSGRectangleCollider(log.x - 32, log.y - 5, 80, 25, 10)
+    log.collider:setType('static')
+    table.insert(logs, log)
 end
